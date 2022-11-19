@@ -11,6 +11,9 @@ def profile_list(request):
 
 
 def profile(request, pk):
+    if not hasattr(request.user, 'profile'):
+        missing_profile = Profile(user=request.user)
+        missing_profile.save()
     profile = Profile.objects.get(pk=pk)
     if request.method == "POST":
         current_user_profile = request.user.profile
@@ -22,4 +25,6 @@ def profile(request, pk):
             current_user_profile.follows.remove(profile)
         current_user_profile.save()
     return render(request, "dwitter/profile.html", {"profile": profile})
+
+
 
